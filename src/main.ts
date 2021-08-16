@@ -1,34 +1,56 @@
 import './style.css'
 
 import createMemory from './memory/create-memory';
-import CPU from './cpu';
-import instructions from './instructions';
+import CPU, { REGISTERS as REG } from './cpu';
+import { INSTUCTIONS as INST } from './instructions';
 
-const memory = createMemory(256);
+const memory = createMemory(256 * 256);
 const writableBytes = new Uint8Array(memory.buffer);
 
 const cpu = new CPU(memory);
 
-writableBytes[0] = instructions.MOV_LIT_R1;
-writableBytes[1] = 0x12; // 0x1234;
-writableBytes[2] = 0x34;
+let i = 0;
 
-writableBytes[3] = instructions.MOV_LIT_R2;
-writableBytes[4] = 0xAB;
-writableBytes[5] = 0xCD;
+//  start:
+//    mov #0x0100, r1
+//    mov  0x0001, r2
+//    add r1, r2
+//    mov acc, #0x0100
+//    jne 0x0003, start:
 
-writableBytes[6] = instructions.ADD_REG_REG;
-writableBytes[7] = 2;
-writableBytes[8] = 3;
+writableBytes[i++] = INST.MOV_MEM_REG;
+writableBytes[i++] = 0x01;
+writableBytes[i++] = 0x00;
+writableBytes[i++] = REG.R1;
+
+writableBytes[i++] = INST.MOV_LIT_REG;
+writableBytes[i++] = 0x01;
+writableBytes[i++] = 0x00;
+writableBytes[i++] = REG.R2;
+
+writableBytes[i++] = INST.ADD_REG_REG;
+writableBytes[i++] = REG.R1;
+writableBytes[i++] = REG.R2;
+
+writableBytes[i++] = INST.MOV_MEM_REG;
+writableBytes[i++] = REG.ACC;
+writableBytes[i++] = 0x01;
+writableBytes[i++] = 0x00;
+
+writableBytes[i++] = INST.JMP_NOT_EQ;
+writableBytes[i++] = 0x00;
+writableBytes[i++] = 0x03;
+writableBytes[i++] = 0x00;
+writableBytes[i++] = 0x00;
 
 cpu.debug();
+cpu.viewMemoryAt(cpu.getRegister(REG.R1));
+cpu.viewMemoryAt(0x0100);
 
 cpu.step();
-cpu.debug();
-cpu.step();
-cpu.debug();
-cpu.step();
-cpu.debug();
+cpu.viewMemoryAt(cpu.getRegister(REG.R1));
+cpu.viewMemoryAt(0x0100);
+
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 
