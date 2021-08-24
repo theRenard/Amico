@@ -11,37 +11,31 @@ const cpu = new CPU(memory);
 
 let i = 0;
 
-//  start:
-//    mov #0x0100, r1
-//    mov  0x0001, r2
-//    add r1, r2
-//    mov acc, #0x0100
-//    jne 0x0003, start:
+// mov $5151, r1
+// mov $4242, r2
+//
+// psh r1
+// psh r1
+//
+// pop r1
+// pop r2
 
-writableBytes[i++] = INST.MOV_MEM_REG;
-writableBytes[i++] = 0x01;
-writableBytes[i++] = 0x00;
+writableBytes[i++] = INST.MOV_LIT_REG;
+writableBytes[i++] = 0x51;
+writableBytes[i++] = 0x51;
 writableBytes[i++] = REG.R1;
 
 writableBytes[i++] = INST.MOV_LIT_REG;
-writableBytes[i++] = 0x01;
-writableBytes[i++] = 0x00;
+writableBytes[i++] = 0x41;
+writableBytes[i++] = 0x41;
 writableBytes[i++] = REG.R2;
 
-writableBytes[i++] = INST.ADD_REG_REG;
+writableBytes[i++] = INST.PSH_REG;
 writableBytes[i++] = REG.R1;
+
+writableBytes[i++] = INST.PSH_REG;
 writableBytes[i++] = REG.R2;
 
-writableBytes[i++] = INST.MOV_MEM_REG;
-writableBytes[i++] = REG.ACC;
-writableBytes[i++] = 0x01;
-writableBytes[i++] = 0x00;
-
-writableBytes[i++] = INST.JMP_NOT_EQ;
-writableBytes[i++] = 0x00;
-writableBytes[i++] = 0x03;
-writableBytes[i++] = 0x00;
-writableBytes[i++] = 0x00;
 
 cpu.debug();
 cpu.viewMemoryAt(cpu.getRegister(REG.R1));
