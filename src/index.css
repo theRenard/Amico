@@ -1,4 +1,16 @@
-/* ./src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body {
+  font-family: 'Press Start 2P', cursive;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #000;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}

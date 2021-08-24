@@ -3,7 +3,9 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from 'vue'
+import { ref, defineComponent, onMounted } from 'vue';
+import vm from '../vm/virtual-machine';
+
 export default defineComponent({
   name: 'HelloWorld',
   props: {
@@ -14,8 +16,12 @@ export default defineComponent({
   },
   setup: () => {
     const count = ref(0)
+    onMounted(() => {
+      console.log('mounted')
+      vm();
+    })
     return { count }
-  }
+  },
 })
 </script>
 
